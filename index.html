@@ -1,9 +1,29 @@
+<!doctype html>
 <html>
-<head></head>
-<body>
-	<h1>An http mjpeg streaming server based on boost::asio</h1>
-	<a href="/_all">/_all</a> a listing of all streams.
-	<br />
-	<img src="/stream_0" alt="A streaming jpeg."/>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <title>streamer</title>
+    <script src="jquery.js"></script>
+  </head>
+  <body>
+    <a href="/_all">/_all</a> a listing of all streams.<br/>
+    <div id="result"></div>
+    <script>
+     $(document).ready(function(){
+        $.post('/_all', function(data) {
+          $( "#result" ).empty();
+          var list = data.split('\n');
+          for ( x in list)
+          {
+            var url = list[x];
+            if(url.length >1)
+            {
+                var imgstr = '<img src="'+url+'" width="300"/><br/>';
+                $( "#result" ).append( imgstr );
+            }
+          }
+        });
+     });
+    </script>
+  </body>
 </html>
