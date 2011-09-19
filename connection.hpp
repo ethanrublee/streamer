@@ -25,7 +25,7 @@
 #include <iostream>
 namespace http
 {
-  namespace server3
+  namespace server
   {
 
     /// Represents a single connection from a client.

@@ -15,7 +15,7 @@
 
 namespace http
 {
-  namespace server3
+  namespace server
   {
     namespace mime_types
     {

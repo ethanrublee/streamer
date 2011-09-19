@@ -19,7 +19,7 @@
 #define BOUNDARYSTRING "--BOUNDARYSTRING\r\n"
 namespace http
 {
-  namespace server3
+  namespace server
   {
     streamer::streamer()
         :
@@ -29,6 +29,7 @@ namespace http
       cv::Mat image(cv::Size(640, 480), CV_8UC3, cv::Scalar(std::rand() % 255, std::rand() % 255, std::rand() % 255));
       post_image(image);
     }
+
     void
     streamer::handle_initial_header_write(connection_ptr conn, const boost::system::error_code& e)
     {
@@ -101,7 +102,7 @@ namespace http
     int
     streamer::post_image(const cv::Mat& image, bool wait)
     {
-      while (!watchers_ && wait)
+      while (!watchers_ && wait && !boost::this_thread::interruption_requested())
       {
         boost::this_thread::sleep(boost::posix_time::milliseconds(100));
       }
@@ -123,7 +124,7 @@ namespace http
       rep.status = reply::moved_temporarily;
       rep.headers.clear();
       rep.content.clear();
-      rep.headers.push_back(header("Location", "_stream" + path + "/" + boost::lexical_cast<std::string>(std::rand())));
+      rep.headers.push_back(header("Location", "/_stream" + path + "/" + boost::lexical_cast<std::string>(std::rand())));
       conn->async_write(rep.to_buffers());
     }
 

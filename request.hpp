@@ -17,7 +17,7 @@
 
 namespace http
 {
-  namespace server3
+  namespace server
   {
 
     /// A request received from a client.

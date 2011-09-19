@@ -18,7 +18,7 @@
 
 namespace http
 {
-  namespace server3
+  namespace server
   {
     namespace misc_strings
     {

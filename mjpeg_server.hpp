@@ -9,7 +9,7 @@
 
 namespace http
 {
-  namespace server3
+  namespace server
   {
     typedef boost::shared_ptr<server> server_ptr;
     struct streamer: boost::enable_shared_from_this<streamer>

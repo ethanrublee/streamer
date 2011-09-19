@@ -4,7 +4,7 @@ namespace mjpeg_server
 {
   void
   wrap_server();
-  using namespace http::server3;
+  using namespace http::server;
   using ecto::tendrils;
   struct MJPEGServer
   {
@@ -13,7 +13,9 @@ namespace mjpeg_server
     {
       p.declare<server_ptr>("server", "The http server to use.").required(true);
       p.declare<std::string>("path", "The path which will resolve to the image.").required(true);
-      p.declare<bool>("wait", "Wait for webbrowser clients.", true);
+      p.declare<bool>("wait", "Wait for webbrowser clients. If this is true then execution"
+                      " will block unless a browser window is viewing the cell.",
+                      false);
 
     }
     static void
@@ -42,7 +44,6 @@ namespace mjpeg_server
       }
       return ecto::OK;
     }
-
     server_ptr server_;
     streamer_ptr streamer_;
     std::string path_;

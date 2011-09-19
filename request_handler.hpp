@@ -18,7 +18,7 @@
 #include <boost/function.hpp>
 namespace http
 {
-  namespace server3
+  namespace server
   {
 
     struct reply;

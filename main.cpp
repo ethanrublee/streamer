@@ -1,28 +1,13 @@
-//
-// based on:
-// posix_main.cpp
-// ~~~~~~~~~~~~~~
-//
-// Copyright (c) 2003-2008 Christopher M. Kohlhoff (chris at kohlhoff dot com)
-//
-// Distributed under the Boost Software License, Version 1.0. (See accompanying
-// file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
-//
-// modified by Ethan Rublee, erublee@willowgarage.com September, 2011
-// adding mjpeg streaming
-//
-
 #include <iostream>
 #include <string>
-
 #include <boost/lexical_cast.hpp>
-
-#include <opencv2/core/core.hpp>
-
 #include "mjpeg_server.hpp"
 
-using namespace http::server3;
-
+cv::Mat
+random_image()
+{
+  return cv::Mat(cv::Size(640, 480), CV_8UC3, cv::Scalar(std::rand() % 255, std::rand() % 255, std::rand() % 255));
+}
 int
 main(int argc, char* argv[])
 {
@@ -31,32 +16,35 @@ main(int argc, char* argv[])
     // Check command line arguments.
     if (argc != 5)
     {
-      std::cerr << "Usage: http_server <address> <port> <threads> <doc_root>\n";
-      std::cerr << "  For IPv4, try:\n";
-      std::cerr << "    receiver 0.0.0.0 80 1 .\n";
-      std::cerr << "  For IPv6, try:\n";
-      std::cerr << "    receiver 0::0 80 1 .\n";
+      std::cerr << "Usage: " << argv[0] << " <address> <port> <threads> <doc_root>\n";
+      std::cerr << "try:" << std::endl;
+      std::cerr << "   " << argv[0] << " 0.0.0.0 9090 8 .\n";
       return 1;
     }
+    using namespace http::server;
     // Run server in background thread.
     std::size_t num_threads = boost::lexical_cast<std::size_t>(argv[3]);
     server_ptr s(init_streaming_server(argv[1], argv[2], argv[4], num_threads));
     streamer_ptr stmr(new streamer);
     register_streamer(s, stmr, "/stream_0");
+    streamer_ptr stmr2(new streamer);
+    register_streamer(s, stmr2, "/stream_1");
+    streamer_ptr stmr3(new streamer);
+    register_streamer(s, stmr3, "/foobar");
     s->start();
     std::cout << "Visit:\n" << argv[1] << ":" << argv[2] << "/stream_0" << std::endl;
     while (true)
     {
-      cv::Mat image(cv::Size(640, 480), CV_8UC3, cv::Scalar(std::rand() % 255, std::rand() % 255, std::rand() % 255));
-      bool wait = true; //wait for there to be more than one webpage looking at us.
-      stmr->post_image(image, wait);
-      //sleep half a second.
-      boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+      cv::Mat image1 = random_image(), image2 = random_image(), image3 = random_image();
+      bool wait = false; //don't wait for there to be more than one webpage looking at us.
+      stmr->post_image(image1, wait);
+      stmr2->post_image(image2, wait);
+      stmr3->post_image(image3, wait);
+      boost::this_thread::sleep(boost::posix_time::milliseconds(100)); //10 fps for ease on my eyes
     }
   } catch (std::exception& e)
   {
     std::cerr << "exception: " << e.what() << "\n";
   }
-
   return 0;
 }

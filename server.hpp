@@ -23,7 +23,7 @@
 
 namespace http
 {
-  namespace server3
+  namespace server
   {
     /// The top-level class of the HTTP server.
     class server: public boost::enable_shared_from_this<server>, private boost::noncopyable

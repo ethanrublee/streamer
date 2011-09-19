@@ -28,7 +28,7 @@
 #include "connection.hpp"
 namespace http
 {
-  namespace server3
+  namespace server
   {
     request_handler::request_handler(const std::string& doc_root)
         :

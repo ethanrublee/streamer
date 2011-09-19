@@ -13,7 +13,7 @@
 
 namespace http
 {
-  namespace server3
+  namespace server
   {
 
     request_parser::request_parser()

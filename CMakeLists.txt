@@ -47,10 +47,10 @@ set_target_properties(httpserv PROPERTIES
 
 find_package(ecto)
 if(ecto_FOUND)
+    ecto_python_env_gen(${CMAKE_BINARY_DIR}/lib)
     ectomodule(mjpeg_server
          module.cpp
     )
-    
     link_ecto(mjpeg_server
       asio_serv
       boost_thread boost_system boost_regex
