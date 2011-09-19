@@ -13,6 +13,7 @@ namespace mjpeg_server
     {
       p.declare<server_ptr>("server", "The http server to use.").required(true);
       p.declare<std::string>("path", "The path which will resolve to the image.").required(true);
+      p.declare<int>("quality","The compression level.",75);
       p.declare<bool>("wait", "Wait for webbrowser clients. If this is true then execution"
                       " will block unless a browser window is viewing the cell.",
                       false);
@@ -31,6 +32,7 @@ namespace mjpeg_server
       p["path"] >> path_;
       image_ = i["image"];
       wait_ = p["wait"];
+      quality_ = p["quality"];
       if (!server_)
         throw std::runtime_error("You must supply a server instance.");
       register_streamer(server_, streamer_, path_);
@@ -40,7 +42,7 @@ namespace mjpeg_server
     {
       if (!image_->empty())
       {
-        int watchers = streamer_->post_image(*image_, *wait_);
+        int watchers = streamer_->post_image(*image_, *quality_,*wait_);
       }
       return ecto::OK;
     }
@@ -49,6 +51,7 @@ namespace mjpeg_server
     std::string path_;
     ecto::spore<cv::Mat> image_;
     ecto::spore<bool> wait_;
+    ecto::spore<int> quality_;
   };
 
   void

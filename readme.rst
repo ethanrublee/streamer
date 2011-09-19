@@ -145,7 +145,8 @@ Quick start::
         cv::Mat image;
         //fill image somehow here. from camera or something.
         bool wait = false; //don't wait for there to be more than one webpage looking at us.
-        int n_viewers = stmr->post_image(image, wait);
+        int quality = 75; //quality of jpeg compression [0,100]
+        int n_viewers = stmr->post_image(image,quality, wait);
         //use boost sleep so that our loop doesn't go out of control.
         boost::this_thread::sleep(boost::posix_time::milliseconds(33)); //30 FPS
       }

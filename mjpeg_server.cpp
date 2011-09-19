@@ -27,7 +27,7 @@ namespace http
     {
       //test image.
       cv::Mat image(cv::Size(640, 480), CV_8UC3, cv::Scalar(std::rand() % 255, std::rand() % 255, std::rand() % 255));
-      post_image(image);
+      post_image(image,80);
     }
 
     void
@@ -100,7 +100,7 @@ namespace http
     }
 
     int
-    streamer::post_image(const cv::Mat& image, bool wait)
+    streamer::post_image(const cv::Mat& image, int quality, bool wait)
     {
       while (!watchers_ && wait && !boost::this_thread::interruption_requested())
       {
@@ -110,7 +110,11 @@ namespace http
       {
         boost::lock_guard<boost::mutex> lock(mtx_);
         jpg_buffer_.clear();
-        cv::imencode(".jpg", image, jpg_buffer_);
+
+        std::vector<int> params(2);
+        params[0] = CV_IMWRITE_JPEG_QUALITY;
+        params[1] = std::min(std::max(double(quality),0.0),100.0);
+        cv::imencode(".jpg", image, jpg_buffer_, params);
       }
       cond_.notify_all();
       return watchers;

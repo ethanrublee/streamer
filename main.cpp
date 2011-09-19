@@ -37,9 +37,10 @@ main(int argc, char* argv[])
     {
       cv::Mat image1 = random_image(), image2 = random_image(), image3 = random_image();
       bool wait = false; //don't wait for there to be more than one webpage looking at us.
-      stmr->post_image(image1, wait);
-      stmr2->post_image(image2, wait);
-      stmr3->post_image(image3, wait);
+      int quality = 80;
+      stmr->post_image(image1,quality, wait);
+      stmr2->post_image(image2,quality, wait);
+      stmr3->post_image(image3,quality, wait);
       boost::this_thread::sleep(boost::posix_time::milliseconds(100)); //10 fps for ease on my eyes
     }
   } catch (std::exception& e)
