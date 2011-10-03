@@ -42,7 +42,7 @@ namespace mjpeg_server
     {
       if (!image_->empty())
       {
-        int watchers = streamer_->post_image(*image_, *quality_,*wait_);
+        streamer_->post_image(*image_, *quality_,*wait_);
       }
       return ecto::OK;
     }
