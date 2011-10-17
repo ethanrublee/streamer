@@ -21,7 +21,7 @@ include_directories(
   ${Boost_INCLUDE_DIRS}
   )
 
-add_library(asio_serv
+add_library(asio_serv SHARED
   connection.cpp
   mime_types.cpp
   reply.cpp
@@ -57,5 +57,4 @@ if(ecto_FOUND)
       ${OpenCV_LIBS}
     )
 endif()
-
   
