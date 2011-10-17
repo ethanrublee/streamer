@@ -56,6 +56,7 @@ if(ecto_FOUND)
       boost_thread boost_system boost_regex
       ${OpenCV_LIBS}
     )
+    install_ecto_module(mjpeg_server)
 endif()
 
   
