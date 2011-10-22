@@ -21,7 +21,7 @@ include_directories(
   ${Boost_INCLUDE_DIRS}
   )
 
-add_library(asio_serv SHARED
+add_library(ecto_streamer_serv SHARED
   connection.cpp
   mime_types.cpp
   reply.cpp
@@ -31,19 +31,25 @@ add_library(asio_serv SHARED
   mjpeg_server.cpp
   )
 
-set_target_properties(asio_serv PROPERTIES
+set_target_properties(ecto_streamer_serv PROPERTIES
     COMPILE_FLAGS "-fpic -Wall -Werror"
     )
 
 add_executable(httpserv  main.cpp)
 target_link_libraries(httpserv
-  asio_serv
+  ecto_streamer_serv
   boost_thread boost_system boost_regex
   ${OpenCV_LIBS}
   )
+
 set_target_properties(httpserv PROPERTIES
     COMPILE_FLAGS "-fpic -Wall -Werror"
     )
+
+install(TARGETS ecto_streamer_serv
+  DESTINATION lib
+  COMPONENT main
+)
 
 find_package(ecto)
 if(ecto_FOUND)
@@ -52,7 +58,7 @@ if(ecto_FOUND)
          module.cpp
     )
     link_ecto(mjpeg_server
-      asio_serv
+      ecto_streamer_serv
       boost_thread boost_system boost_regex
       ${OpenCV_LIBS}
     )
