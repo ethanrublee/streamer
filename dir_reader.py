@@ -15,6 +15,6 @@ plasm.connect(images['image'] >> (streamer1['image']))
 if __name__ == '__main__':
     server.start()
     sched = ecto.schedulers.Singlethreaded(plasm)
-    sched.execute(niter=2)    
+    #sched.execute(niter=0)    
     sched.execute(niter=0)
     server.stop()

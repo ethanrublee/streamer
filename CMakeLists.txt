@@ -15,10 +15,12 @@ if (Boost_FOUND)
   message(STATUS "Boost headers at ${Boost_INCLUDE_DIRS}")
   message(STATUS "Boost libraries at ${Boost_LIBRARIES}")
 endif()
+add_subdirectory(json_spirit)
 
 find_package(OpenCV REQUIRED)
 include_directories(
   ${Boost_INCLUDE_DIRS}
+  ${CMAKE_CURRENT_SOURCE_DIR}
   )
 
 add_library(ecto_streamer_serv SHARED
@@ -31,6 +33,11 @@ add_library(ecto_streamer_serv SHARED
   mjpeg_server.cpp
   )
 
+target_link_libraries(ecto_streamer_serv
+  ${OpenCV_LIBS}
+  boost_thread boost_system boost_regex
+  )
+
 set_target_properties(ecto_streamer_serv PROPERTIES
     COMPILE_FLAGS "-fpic -Wall -Werror"
     )
@@ -38,8 +45,6 @@ set_target_properties(ecto_streamer_serv PROPERTIES
 add_executable(httpserv  main.cpp)
 target_link_libraries(httpserv
   ecto_streamer_serv
-  boost_thread boost_system boost_regex
-  ${OpenCV_LIBS}
   )
 
 set_target_properties(httpserv PROPERTIES
@@ -55,10 +60,12 @@ find_package(ecto)
 if(ecto_FOUND)
     ecto_python_env_gen(${CMAKE_BINARY_DIR}/lib)
     ectomodule(mjpeg_server
-         module.cpp
+       module.cpp
+       cell_parameter_handlers.cpp
     )
     link_ecto(mjpeg_server
       ecto_streamer_serv
+      streamer_json_spirit
       boost_thread boost_system boost_regex
       ${OpenCV_LIBS}
     )

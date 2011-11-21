@@ -3,6 +3,7 @@
 #include "server.hpp"
 #include "mime_types.hpp"
 #include <boost/foreach.hpp>
+#include <boost/algorithm/string.hpp>
 using ecto::tendrils;
 using namespace http::server;
 
@@ -58,70 +59,8 @@ namespace mjpeg_server
     ecto::spore<int> quality_;
   };
 
-  template<typename T>
-  bool
-  repr_t(const ecto::tendril& t, std::string& repr)
-  {
-    bool isit = t.is_type<T>();
-    if (isit)
-    {
-      repr = boost::lexical_cast<std::string>(t.get<T>());
-    }
-    return isit;
-  }
-
-  std::string
-  repr_tendril(const ecto::tendril& t)
-  {
-
-    std::string repr = "NA";
-    if (repr_t<bool>(t, repr))
-    {
-    }
-    else if (repr_t<int>(t, repr))
-    {
-    }
-    else if (repr_t<unsigned>(t, repr))
-    {
-    }
-    else if (repr_t<std::string>(t, repr))
-    {
-    }
-    else if (repr_t<double>(t, repr))
-    {
-    }
-    else if (repr_t<float>(t, repr))
-    {
-    }
-    return repr;
-  }
-
   void
-  handle_get_cell_params(ecto::cell::ptr c, connection_ptr conn, const request& req, const std::string& path,
-                         const std::string&query, reply&rep)
-  {
-    rep.status = reply::ok;
-    rep.headers.clear();
-    rep.content.clear();
-    rep.content += "{";
-    typedef std::pair<std::string, ecto::tendril_ptr> value_type;
-    BOOST_FOREACH(value_type v, c->parameters)
-        {
-          rep.content += v.first + ":" + repr_tendril(*v.second) + ",";
-        }
-    rep.content += "}";
-    rep.headers.push_back(header("Content-Length", boost::lexical_cast<std::string>(rep.content.size())));
-    rep.headers.push_back(header("Content-Type", mime_types::extension_to_type("txt")));
-    conn->async_write(rep.to_buffers());
-  }
-
-  void
-  register_cell_params(server_ptr serv, boost::python::object obj, const std::string& path)
-  {
-    namespace bp = boost::python;
-    ecto::cell_ptr cell = bp::extract<ecto::cell_ptr>(bp::getattr(obj, "__impl"));
-    serv->register_request_handler(path, "GET", boost::bind(handle_get_cell_params, cell, _1, _2, _3, _4, _5));
-  }
+  register_cell_params(server_ptr serv, boost::python::object obj, const std::string& path);
 
   void
   wrap_server()
